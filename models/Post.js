@@ -16,20 +16,16 @@ const PostSchema = new mongoose.Schema(
       type: String,
       required: false,
       unique: false,
+      default: "",
     },
     username: {
       type: String,
-      required: false,
+      required: true,
       unique: false,
     },
     email: {
       type: String,
-      required: false,
-      unique: false,
-    },
-    categories: {
-      type: Array,
-      required: false,
+      required: true,
       unique: false,
     },
   },
