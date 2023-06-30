@@ -38,7 +38,7 @@ router.post("/login", async (req, res) => {
       return;
     }
 
-    const { password, ...others } = user._doc;
+    const { password, ...otherUserInfos } = user._doc;
 
     if (user && validate) {
       const token = jwt.sign(
@@ -46,7 +46,7 @@ router.post("/login", async (req, res) => {
         process.env.TOKEN_SECRET_KEY
       );
 
-      res.status(200).json({ token, ...others });
+      res.status(200).json({ token, ...otherUserInfos });
       return;
     }
   } catch (err) {

@@ -14,41 +14,28 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
-    if (post.email === req.body.email) {
-      try {
-        const updatedPost = await Post.findByIdAndUpdate(
-          req.params.id,
-          { $set: req.body },
-          { new: true }
-        );
-        res.status(200).json(updatedPost);
-      } catch (err) {
-        res.status(500).json(err);
-      }
-    } else {
-      res.status(401).json("You can update only your post");
+    const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    if (!updatedPost) {
+      return res.status(404).json("Post not found");
     }
-  } catch (err) {
-    res.status(500).json(err);
+
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json("An error occurred while updating the post");
   }
 });
 
 router.delete("/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
-    if (post.email === req.body.email) {
-      try {
-        await Post.deleteOne({ _id: req.params.id });
-        res.status(200).json("Post has been deleted!");
-      } catch (err) {
-        res.status(500).json(err);
-      }
-    } else {
-      res.status(401).json("You can delete only your post!");
-    }
-  } catch (err) {
-    res.status(500).json(err);
+    await Post.deleteOne({ _id: req.params.id });
+    res.status(200).json("Post has been deleted!");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json("An error occurred while deleting the post");
   }
 });
 

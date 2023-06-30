@@ -19,12 +19,12 @@ const PostSchema = new mongoose.Schema(
     },
     username: {
       type: String,
-      required: true,
+      required: false,
       unique: false,
     },
     email: {
       type: String,
-      required: true,
+      required: false,
       unique: false,
     },
     categories: {
