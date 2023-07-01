@@ -27,6 +27,13 @@ router.post("/register", async (req, res) => {
       return;
     }
 
+    const existingUser = await User.findOne({ email: req.body.email });
+
+    if (existingUser) {
+      res.status(409).json("A user with this email already exists!");
+      return;
+    }
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
@@ -48,14 +55,18 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
-      res.status(400).json("Username or password is wrong! Invalid credentials.");
+      res
+        .status(400)
+        .json("Username or password is wrong! Invalid credentials.");
       return;
     }
 
     const validate = await bcrypt.compare(req.body.password, user.password);
 
     if (!validate) {
-      res.status(400).json("Username or password is wrong! Invalid credentials.");
+      res
+        .status(400)
+        .json("Username or password is wrong! Invalid credentials.");
       return;
     }
 
@@ -71,6 +82,5 @@ router.post("/login", async (req, res) => {
     res.status(500).json(err);
   }
 });
-
 
 module.exports = router;
