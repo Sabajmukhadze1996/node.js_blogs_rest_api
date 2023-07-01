@@ -17,6 +17,11 @@ router.post("/register", async (req, res) => {
       return;
     }
 
+    if (req.body.email.length > 90) {
+      res.status(405).json("Email address is too long. Please provide a shorter email.")
+      return;
+    }
+
     if (req.body.username.length < 3 || req.body.username.length > 45) {
       res.status(405).json("Username must be 3 to 45 characters long.");
       return;
