@@ -5,35 +5,50 @@ const bcrypt = require("bcrypt");
 
 router.put("/:id", async (req, res) => {
     try {
-  
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-      if (!emailRegex.test(req.body.email)) {
-        res.status(405).json({ error: "Please write a correct email!" });
-        return;
-      }
-
-      if (req.body.email.length > 90) {
-        res.status(405).json({ error: "Email address is too long. Please provide a shorter email." });
+      if (!req.body.email && !req.body.username && !req.body.password) {
+        res.status(401).json({ error: "No fields provided for update!" });
         return;
       }
   
-      if (req.body.username.length < 3 || req.body.username.length > 45) {
+      if (req.body.email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+        if (!emailRegex.test(req.body.email)) {
+          res.status(405).json({ error: "Please write a correct email!" });
+          return;
+        }
+  
+        if (req.body.email.length > 90) {
+          res.status(405).json({ error: "Email address is too long. Please provide a shorter email." });
+          return;
+        }
+      }
+  
+      if (req.body.username && (req.body.username.length < 3 || req.body.username.length > 45)) {
         res.status(405).json({ error: "Username must be 3 to 45 characters long." });
         return;
       }
   
-      if (req.body.password.length < 8 || req.body.password.length > 45) {
+      if (req.body.password && (req.body.password.length < 8 || req.body.password.length > 45)) {
         res.status(405).json({ error: "Password must be 8 to 45 characters long." });
         return;
       }
   
-      if (req.body.password) {
-        const salt = await bcrypt.genSalt(10);
-        req.body.password = await bcrypt.hash(req.body.password, salt);
+      const updateFields = {};
+  
+      if (req.body.username) {
+        updateFields.username = req.body.username;
+      }
+
+      if (req.body.email) {
+        updateFields.email = req.body.email;
       }
   
-      const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      if (req.body.password) {
+        const salt = await bcrypt.genSalt(10);
+        updateFields.password = await bcrypt.hash(req.body.password, salt);
+      }
+  
+      const updatedUser = await User.findByIdAndUpdate(req.params.id, updateFields, {
         new: true,
       });
   
