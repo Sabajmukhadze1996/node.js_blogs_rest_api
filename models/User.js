@@ -17,12 +17,12 @@ const UserSchema = new mongoose.Schema(
       required: true,
       unique: false,
     },
-    profilePic: {
-      type: String,
-      default: "",
-      unique: false,
-      required: false,
-    },
+    // profilePic: {
+    //   type: String,
+    //   default: "",
+    //   unique: false,
+    //   required: false,
+    // },
   },
   { timestamps: true }
 );

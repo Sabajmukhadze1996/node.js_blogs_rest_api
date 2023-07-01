@@ -12,12 +12,12 @@ const PostSchema = new mongoose.Schema(
       required: true,
       unique: false,
     },
-    photo: {
-      type: String,
-      required: false,
-      unique: false,
-      default: "",
-    },
+    // photo: {
+    //   type: String,
+    //   required: false,
+    //   unique: false,
+    //   default: "",
+    // },
     username: {
       type: String,
       required: true,

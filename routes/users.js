@@ -4,26 +4,50 @@ const Post = require("../models/Post");
 const bcrypt = require("bcrypt");
 
 router.put("/:id", async (req, res) => {
-  try {
-    if (req.body.password) {
-      const salt = await bcrypt.genSalt(10);
-      req.body.password = await bcrypt.hash(req.body.password, salt);
+    try {
+  
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(req.body.email)) {
+        res.status(405).json({ error: "Please write a correct email!" });
+        return;
+      }
+
+      if (req.body.email.length > 90) {
+        res.status(405).json({ error: "Email address is too long. Please provide a shorter email." });
+        return;
+      }
+  
+      if (req.body.username.length < 3 || req.body.username.length > 45) {
+        res.status(405).json({ error: "Username must be 3 to 45 characters long." });
+        return;
+      }
+  
+      if (req.body.password.length < 8 || req.body.password.length > 45) {
+        res.status(405).json({ error: "Password must be 8 to 45 characters long." });
+        return;
+      }
+  
+      if (req.body.password) {
+        const salt = await bcrypt.genSalt(10);
+        req.body.password = await bcrypt.hash(req.body.password, salt);
+      }
+  
+      const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
+  
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+  
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "An error occurred while updating the user" });
     }
-
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-
-    if (!updatedUser) {
-      return res.status(404).json("User not found");
-    }
-
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json("An error occurred while updating the user");
-  }
-});
+  });
+  
 
 router.delete("/:id", async (req, res) => {
   try {
