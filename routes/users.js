@@ -90,7 +90,7 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json("User not found");
     }
     // როცა იუზერი წაშლის თავის ექაუნთს მაგის პოსტებიც წაიშლება ავტომატურად
-    await Post.deleteMany({ email: user.email });
+    await Post.deleteMany({ user_email: user.user_email });
     await User.deleteOne({ _id: req.params.id });
 
     res.status(200).json("User has been deleted!");

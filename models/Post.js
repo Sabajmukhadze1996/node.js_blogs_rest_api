@@ -3,11 +3,16 @@ const mongoose = require("mongoose");
 const PostSchema = new mongoose.Schema(
   {
     title: {
-      type: String || Number,
+      type: String,
       required: true,
       unique: false,
     },
     description: {
+      type: String,
+      required: true,
+      unique: false,
+    },
+    item_location: {
       type: String,
       required: true,
       unique: false,
@@ -18,12 +23,12 @@ const PostSchema = new mongoose.Schema(
     //   unique: false,
     //   default: "",
     // },
-    username: {
+    user_name: {
       type: String,
       required: true,
       unique: false,
     },
-    email: {
+    user_email: {
       type: String,
       required: true,
       unique: false,
