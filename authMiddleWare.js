@@ -1,10 +1,19 @@
 const jwt = require("jsonwebtoken");
 
 const authMiddleware = (req, res, next) => {
-  const token = req.headers["authorization"];
- 
+  const authorizationHeader =
+    req.headers["Authorization"] || req.headers["authorization"];
+
+  if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
+    res.status(401).json({ error: "Access denied. Token is required." });
+    return;
+  }
+
+  const token = authorizationHeader.replace("Bearer ", "");
+
   if (!token) {
-    return res.status(401).json("Access denied. Token is required.");
+    res.status(401).json({ error: "Access denied. Token is required." });
+    return;
   }
 
   try {
@@ -12,7 +21,7 @@ const authMiddleware = (req, res, next) => {
     req.user = verified;
     next();
   } catch (err) {
-    res.status(400).json("Invalid token.");
+    res.status(400).json({ error: "Invalid token." });
   }
 };
 
