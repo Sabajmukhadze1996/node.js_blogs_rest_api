@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Post</title>
+</head>
+<body>
+  <h1>Create Post</h1>
+  <form id="postForm" enctype="multipart/form-data">
+    <label for="item_title">Item Title:</label>
+    <input type="text" id="item_title" name="item_title" required><br>
+
+    <label for="item_description">Item Description:</label>
+    <textarea id="item_description" name="item_description" required></textarea><br>
+
+    <label for="item_location">Item Location:</label>
+    <input type="text" id="item_location" name="item_location" required><br>
+
+    <label for="item_image">Item Image:</label>
+    <input type="file" id="item_image" name="item_image"><br>
+
+    <label for="user_name">Your Name:</label>
+    <input type="text" id="user_name" name="user_name" required><br>
+
+    <label for="user_email">Your Email:</label>
+    <input type="email" id="user_email" name="user_email" required><br>
+
+    <label for="user_mobile_number">Your Mobile Number:</label>
+    <input type="text" id="user_mobile_number" name="user_mobile_number" required><br>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="postContainer"></div>
+
+  <script>
+    async function createPost(event) {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      const requestOptions = {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDlmNTAwYzNmOGI4NDU0ZjU2M2JmODAiLCJlbWFpbCI6InNhYmFAZ21haWwuY29tIiwiaWF0IjoxNjg4MTYyMzI0fQ.Ne0Bldxfws-bp6OQ7gB0xagfGeimLK2C4zIV1UZNMT0",
+        },
+      };
+
+      try {
+        const response = await fetch("http://localhost:5000/api/posts/64a0a0cdf31031cc8b3d71d3", requestOptions);
+        const data = await response.json();
+        console.log(data); // Log the response from the server
+        alert("Post created successfully!");
+        // Reset the form after successful submission
+        document.getElementById("postForm").reset();
+
+        // Display the new post below the form
+        displayPost(data);
+      } catch (error) {
+        console.error(error);
+        alert("An error occurred while creating the post.");
+      }
+    }
+
+    function displayPost(post) {
+      const postContainer = document.getElementById("postContainer");
+
+      const postElement = document.createElement("div");
+      const imageElement = document.createElement("img");
+      imageElement.style.width = "100px";
+      imageElement.src = post && post.item_image && post.item_image.contentType && post.item_image.data
+        ? `data:${post.item_image.contentType};base64,${post.item_image.data}`
+        : "";
+
+      postElement.innerHTML = `
+        <h2>${post && post.item_title}</h2>
+        <p>${post && post.item_description}</p>
+        <p>Location: ${post && post.item_location}</p>
+        <p>Posted by: ${post && post.user_name}</p>
+      `;
+
+      postElement.appendChild(imageElement);
+      postContainer.appendChild(postElement);
+    }
+
+    document.getElementById("postForm").addEventListener("submit", createPost);
+  </script>
+</body>
+</html>

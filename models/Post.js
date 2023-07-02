@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 
 const PostSchema = new mongoose.Schema(
   {
-    title: {
+    item_title: {
       type: String,
       required: true,
       unique: false,
     },
-    description: {
+    item_description: {
       type: String,
       required: true,
       unique: false,
@@ -17,18 +17,27 @@ const PostSchema = new mongoose.Schema(
       required: true,
       unique: false,
     },
-    // photo: {
-    //   type: String,
-    //   required: false,
-    //   unique: false,
-    //   default: "",
-    // },
+    item_image: {
+      data: {
+        type: Buffer,
+        required: false,
+      },
+      contentType: {
+        type: String,
+        required: false,
+      },
+    },
     user_name: {
       type: String,
       required: true,
       unique: false,
     },
     user_email: {
+      type: String,
+      required: true,
+      unique: false,
+    },
+    user_mobile_number: {
       type: String,
       required: true,
       unique: false,

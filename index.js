@@ -6,9 +6,10 @@ const cors = require("cors");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
 
-const authRoute = require("./routes/auth");
-const usersRoute = require("./routes/users");
-const postsRoute = require("./routes/posts")
+
+const authRoute = require("./routes/users_auth");
+const usersRoute = require("./routes/registeredUsers");
+const postsRoute = require("./routes/posts");
 const authMiddleware = require("./authMiddleWare");
 
 mongoose
@@ -20,6 +21,7 @@ mongoose
   .catch((err) => console.log(err));
 
 
+
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
@@ -28,8 +30,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", authMiddleware, usersRoute);
-app.use("/api/posts", authMiddleware, postsRoute)
-
+app.use("/api/posts", authMiddleware, postsRoute);
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000");
